@@ -11,4 +11,8 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="login">Login</string>
+    <string name="home">Home</string>
+
+    <string name="write_diary">Write Diary</string>
+    <string name="read_diary">Read Diary</string>
 </resources>
