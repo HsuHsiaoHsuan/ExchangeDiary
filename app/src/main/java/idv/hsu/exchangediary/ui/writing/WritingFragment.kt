@@ -3,6 +3,7 @@ package idv.hsu.exchangediary.ui.writing
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import idv.hsu.exchangediary.R
 import idv.hsu.exchangediary.databinding.FragmentWritingBinding
 import idv.hsu.exchangediary.ui.utils.getNowDateString
 import timber.log.Timber
+import java.io.File
 
 @AndroidEntryPoint
 class WritingFragment : Fragment(R.layout.fragment_writing) {
@@ -35,6 +37,23 @@ class WritingFragment : Fragment(R.layout.fragment_writing) {
 //                            result.data?.data
 //                        )
 //                    )
+                    result.data?.data?.let { uri ->
+                        val input = requireActivity().contentResolver.openInputStream(uri)?.let {
+                            val file = File(requireActivity().filesDir, "Freeman2.png")
+                            it.copyTo(file.outputStream(), 16 * 1024)
+                        }
+                    }
+
+                    result.data?.data?.let {
+                        requireActivity().contentResolver.query(it, null, null, null, null)
+                    }?.use {
+                        val nameIdx = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        val sizeIdx = it.getColumnIndex(OpenableColumns.SIZE)
+                        it.moveToFirst()
+                        Timber.d("FREEMAN, name: ${it.getString(nameIdx)}")
+                        Timber.d("FREEMAN, size: ${it.getString(sizeIdx)}")
+                    }
+
                     Glide.with(this)
                         .load(result.data?.data)
                         .into(binding.imagePicker)
